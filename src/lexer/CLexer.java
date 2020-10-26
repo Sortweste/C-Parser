@@ -8,12 +8,13 @@ import java.util.regex.Pattern;
 public class CLexer {
 
     private static int counter = 0;
-    //private static int line_count = 0;
+    private static int line_count = 0;
     private static final Hashtable<Integer, Element> symbolTable = new Hashtable<>();
     private static final ArrayList<Token> tokens = new ArrayList<>();
 
     private static ArrayList<Token> lexer(String s){
 
+        s = s.replace("\n", "0newline"); //Identifiers cannot start with number
         StringBuilder tokenPatternsBuffer = new StringBuilder();
 
         for(TokenType tokenType: TokenType.values())
@@ -33,6 +34,8 @@ public class CLexer {
                 tokens.add(new Token(TokenType.DATATYPE, matcher.group(TokenType.DATATYPE.name())));
             }else if(matcher.group(TokenType.STRUCTYPE.name()) != null){
                 tokens.add(new Token(TokenType.STRUCTYPE, matcher.group(TokenType.STRUCTYPE.name())));
+            }else if(matcher.group(TokenType.BREAKLINE.name()) != null){
+                tokens.add(new Token(TokenType.BREAKLINE, matcher.group(TokenType.BREAKLINE.name())));
             }else if(matcher.group(TokenType.IDENTIFIER.name()) != null){
                 tokens.add(new Token(TokenType.IDENTIFIER, matcher.group(TokenType.IDENTIFIER.name())));
             }else if(matcher.group(TokenType.NUMBERTYPE.name()) != null){
@@ -59,12 +62,14 @@ public class CLexer {
     private static void addTokenToHashTable(String s){
         lexer(s);
         for(Token token: tokens){
-            symbolTable.put(counter, new Element());
+            //if tokens equals break_line, line_count++
+            //symbolTable.put(counter, new Element());
             counter++;
         }
     }
 
-    public static void printTokens(){
+    public static void printTokens(String s){
+        lexer(s);
         for(Token token: tokens)
             System.out.println(token);
     }
