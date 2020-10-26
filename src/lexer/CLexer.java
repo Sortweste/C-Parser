@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 public class CLexer {
 
     private static int counter = 0;
+    //private static int line_count = 0;
     private static final Hashtable<Integer, Element> symbolTable = new Hashtable<>();
     private static final ArrayList<Token> tokens = new ArrayList<>();
 
@@ -55,10 +56,22 @@ public class CLexer {
         return tokens;
     }
 
-    public static void printTokens(String s){
+    private static void addTokenToHashTable(String s){
         lexer(s);
+        for(Token token: tokens){
+            symbolTable.put(counter, new Element());
+            counter++;
+        }
+    }
+
+    public static void printTokens(){
         for(Token token: tokens)
             System.out.println(token);
+    }
+
+    public static void printHashTable(){
+        System.out.printf("\n%s \t %s \t %s \t %s \t %s \t %s%n", "TOKEN_TYPE", "NAME", "DATATYPE", "VARIABLE", "FUNCTION", "VALUE");
+        symbolTable.forEach((integer, element) -> System.out.println(element));
     }
 
 }
